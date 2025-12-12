@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
@@ -14,102 +14,98 @@ import TeamCalendarPage from './pages/TeamCalendarPage.jsx';
 
 import Navbar from './components/Navbar.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
-import { AuthProvider } from './context/AuthContext.jsx';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Navbar /> {/* Navbar now hides automatically when user = null */}
+    <>
+      <Navbar />
 
-        <div className="app-content">
-          <Routes>
-            <Route path="/" element={<Navigate to="/login" replace />} />
+      <div className="app-content">
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
 
-            {/* Public routes */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+          {/* Public routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
 
-            {/* Employee routes */}
-            <Route
-              path="/employee/dashboard"
-              element={
-                <ProtectedRoute allowedRoles={['employee']}>
-                  <EmployeeDashboard />
-                </ProtectedRoute>
-              }
-            />
+          {/* Employee */}
+          <Route
+            path="/employee/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['employee']}>
+                <EmployeeDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/employee/apply-leave"
-              element={
-                <ProtectedRoute allowedRoles={['employee']}>
-                  <ApplyLeavePage />
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            path="/employee/apply-leave"
+            element={
+              <ProtectedRoute allowedRoles={['employee']}>
+                <ApplyLeavePage />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/employee/my-leaves"
-              element={
-                <ProtectedRoute allowedRoles={['employee']}>
-                  <MyLeavesPage />
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            path="/employee/my-leaves"
+            element={
+              <ProtectedRoute allowedRoles={['employee']}>
+                <MyLeavesPage />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/employee/my-balance"
-              element={
-                <ProtectedRoute allowedRoles={['employee']}>
-                  <MyBalancePage />
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            path="/employee/my-balance"
+            element={
+              <ProtectedRoute allowedRoles={['employee']}>
+                <MyBalancePage />
+              </ProtectedRoute>
+            }
+          />
 
-            {/* Manager routes */}
-            <Route
-              path="/manager/dashboard"
-              element={
-                <ProtectedRoute allowedRoles={['manager']}>
-                  <ManagerDashboard />
-                </ProtectedRoute>
-              }
-            />
+          {/* Manager */}
+          <Route
+            path="/manager/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['manager']}>
+                <ManagerDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/manager/pending-requests"
-              element={
-                <ProtectedRoute allowedRoles={['manager']}>
-                  <PendingRequestsPage />
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            path="/manager/pending-requests"
+            element={
+              <ProtectedRoute allowedRoles={['manager']}>
+                <PendingRequestsPage />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/manager/team-history"
-              element={
-                <ProtectedRoute allowedRoles={['manager']}>
-                  <TeamHistoryPage />
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            path="/manager/team-history"
+            element={
+              <ProtectedRoute allowedRoles={['manager']}>
+                <TeamHistoryPage />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/manager/team-calendar"
-              element={
-                <ProtectedRoute allowedRoles={['manager']}>
-                  <TeamCalendarPage />
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            path="/manager/team-calendar"
+            element={
+              <ProtectedRoute allowedRoles={['manager']}>
+                <TeamCalendarPage />
+              </ProtectedRoute>
+            }
+          />
 
-            {/* 404 */}
-            <Route path="*" element={<div style={{ padding: '1rem' }}>Page not found</div>} />
-          </Routes>
-        </div>
-      </Router>
-    </AuthProvider>
+          <Route path="*" element={<div>Page not found</div>} />
+        </Routes>
+      </div>
+    </>
   );
 }
 
