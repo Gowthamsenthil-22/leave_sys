@@ -44,5 +44,4 @@ const TeamCalendarPage = () => {
     </div>
   );
 };
-
 export default TeamCalendarPage;
