@@ -1,160 +1,129 @@
-/* Global clean UI */
+/* GLOBAL LAYOUT ----------------------------------------------------*/
 body {
+  background: #f5f7fa;
+  font-family: 'Inter', sans-serif;
   margin: 0;
   padding: 0;
-  font-family: 'Inter', sans-serif;
-  background: #f4f6fb;
-  color: #111827;
 }
 
-/* PAGE CENTERING */
-.page-container {
-  max-width: 900px;
-  margin-left: 320px; /* EXACT left shift like your screenshot */
-  margin-top: 60px;
-}
-
-/* CARD STYLE */
-.card {
-  background: white;
-  padding: 28px 32px;
-  border-radius: 10px;
-  width: 900px;
-  box-shadow: 0px 4px 18px rgba(0, 0, 0, 0.08);
-}
-
-/* HEADINGS */
-.card h2 {
-  font-size: 26px;
-  margin-bottom: 25px;
-  color: #111827;
-}
-
-/* FORM INPUTS */
-.form-group label {
-  display: block;
-  font-size: 15px;
-  margin-bottom: 8px;
-  color: #374151;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 15px;
-  background: white;
-}
-
-/* BUTTON */
-.primary-button {
-  width: 100%;
-  padding: 12px;
-  background: #0B132B; /* EXACT dark navy like screenshot */
-  color: white;
-  border: none;
-  border-radius: 6px;
-  margin-top: 15px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.primary-button:hover {
-  background: #060A16;
-}
-
-/* Muted text */
-.muted-text {
-  margin-top: 14px;
-  font-size: 14px;
-  color: #6b7280;
-}
-
-/* NAVBAR */
+/* NAVBAR -----------------------------------------------------------*/
 .navbar {
-  background: #0B132B;
+  background: #0d1b2a;
   padding: 16px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.navbar-title {
   color: white;
-  font-size: 18px;
 }
 
-.navbar-links a {
-  color: white;
-  text-decoration: none;
-  margin-left: 20px;
-  font-size: 15px;
-}
-
-.navbar-links a:hover {
-  color: #d1d5db;
-}
-/* NAVBAR CONTAINER */
-.navbar {
-  width: 100%;
-  background: #0B132B; /* Clean dark navy */
-  padding: 15px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* LOGO TEXT */
 .nav-logo {
-  color: white;
-  margin: 0;
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 600;
 }
 
-/* LEFT SIDE (logo + links) */
-.nav-left {
-  display: flex;
-  align-items: center;
-  gap: 40px;
-}
-
-/* MIDDLE LINKS */
 .nav-links a {
-  color: white;
-  text-decoration: none;
+  color: #e0e1dd;
   margin-right: 20px;
   font-size: 15px;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: 0.2s;
 }
 
 .nav-links a:hover {
-  color: #d1d5db;
-}
-
-/* RIGHT SIDE AUTH LINKS */
-.auth-link {
+  background: #415a77;
   color: white;
-  text-decoration: none;
-  margin-left: 18px;
-  font-size: 15px;
 }
 
-.auth-link:hover {
-  color: #d1d5db;
+.nav-links a.active {
+  background: #1b263b;
+  color: white;
 }
 
-/* LOGOUT BUTTON */
+/* LOGOUT BUTTON ----------------------------------------------------*/
 .logout-btn {
-  background: #1f2937;
+  background: #e63946;
+  padding: 8px 16px;
   color: white;
   border: none;
-  padding: 8px 14px;
+  font-size: 14px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  transition: 0.2s;
 }
 
 .logout-btn:hover {
-  background: #111827;
+  background: #d62828;
+}
+
+/* CARD (for all pages) ---------------------------------------------*/
+.page-card {
+  background: white;
+  width: 60%;
+  margin: 40px auto;
+  padding: 35px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+/* TITLES ------------------------------------------------------------*/
+.page-title {
+  font-size: 26px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+/* BUTTONS -----------------------------------------------------------*/
+.primary-btn {
+  background: #0d1b2a;
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.2s;
+}
+
+.primary-btn:hover {
+  background: #1b263b;
+}
+
+/* FORM ---------------------------------------------------------------*/
+.form-group {
+  margin-bottom: 20px;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+input:focus, select:focus {
+  border-color: #0d1b2a;
+  outline: none;
+}
+
+/* TABLE --------------------------------------------------------------*/
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+th {
+  text-align: left;
+  background: #e9ecef;
+  padding: 14px;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
 }
