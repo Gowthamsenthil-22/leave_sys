@@ -1,110 +1,183 @@
-/* GLOBAL LAYOUT */
+/* ===============================
+   Global Base Styles (Modern Minimal)
+   =============================== */
+
 body {
   margin: 0;
   padding: 0;
-  font-family: "Inter", sans-serif;
-  background: #f5f6fa;
-  color: #222;
+  font-family: 'Inter', sans-serif;
+  background: #f4f6f9;
+  color: #1a1a1a;
 }
 
-/* Page wrapper */
-.page-container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 20px;
+.app-container {
+  min-height: 100vh;
 }
 
-/* Card box */
-.card {
-  background: white;
-  padding: 32px;
-  border-radius: 12px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
-  margin-top: 30px;
+.app-content {
+  padding: 2rem 1rem;
 }
 
-/* Headings */
-h2 {
-  font-size: 1.8rem;
-  margin-bottom: 25px;
+/* ===============================
+   Typography
+   =============================== */
+
+h1, h2, h3 {
+  color: #111827;
   font-weight: 700;
-  color: #111;
 }
 
-/* TABLE STYLING */
-.table-wrapper {
+p {
+  color: #4b5563;
+}
+
+/* ===============================
+   Card (White Box)
+   =============================== */
+
+.card {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  max-width: 900px;
+  margin: auto;
+}
+
+/* ===============================
+   Buttons
+   =============================== */
+
+.primary-button {
   width: 100%;
+  background: #0a1437;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.primary-button:hover {
+  background: #172554;
+}
+
+.nav-button {
+  background: transparent;
+  border: none;
+  padding: 8px 14px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.nav-button:hover {
+  color: #0a1437;
+}
+
+/* ===============================
+   Form Styling
+   =============================== */
+
+.form-group {
+  margin-bottom: 1.3rem;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #0a1437;
+}
+
+/* ===============================
+   Table (Clean UI)
+   =============================== */
+
+.table-container {
   overflow-x: auto;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
-  background: white;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-th, td {
-  padding: 16px 20px;
-  font-size: 16px;
-  text-align: left;
+  margin-top: 1rem;
 }
 
 th {
+  text-align: left;
+  padding: 14px;
   background: #f0f2f5;
   font-weight: 600;
 }
 
-tr {
-  border-bottom: 1px solid #eee;
+td {
+  padding: 14px;
+  border-top: 1px solid #e5e7eb;
 }
 
-tr:last-child {
-  border-bottom: none;
+tr:hover {
+  background: #f9fafb;
 }
 
-/* BUTTONS */
-.primary-button, .secondary-button {
-  padding: 12px 20px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 500;
+/* ===============================
+   Centered Layout for Cards
+   =============================== */
+
+.center-box {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
 }
 
-.primary-button {
-  background: #071a36;
-  color: white;
-  width: 100%;
-  margin-top: 15px;
+/* ===============================
+   Error Message
+   =============================== */
+
+.error-text {
+  color: #dc2626;
+  margin-bottom: 1rem;
 }
 
-.secondary-button {
-  background: #dfe4ea;
-}
+/* ===============================
+   Navbar Styling
+   =============================== */
 
-/* NAVBAR FIX */
 .navbar {
-  background: #071a36;
-  padding: 16px 40px;
+  width: 100%;
+  background: #0a1437;
+  padding: 1rem 2rem;
   color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 17px;
 }
 
-.navbar a {
-  color: white;
+.navbar-links a {
+  margin-right: 1.5rem;
+  color: #cbd5e1;
   text-decoration: none;
-  margin-left: 25px;
-  font-weight: 500;
 }
 
-.navbar a:hover {
-  opacity: 0.7;
+.navbar-links a:hover {
+  color: white;
+}
+
+.logout-btn {
+  background: white;
+  color: #0a1437;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
 }
