@@ -1,64 +1,46 @@
 import React, { useEffect, useState } from "react";
-import axiosClient from "../api/axiosClient"; // FIXED PATH ✔
+import axiosClient from "../api/axiosClient";
 
 const TeamHistoryPage = () => {
-  const [leaves, setLeaves] = useState([]);
-  const [error, setError] = useState("");
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        setError("");
-        const res = await axiosClient.get("/leaves/team/history");
-        setLeaves(res.data);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to fetch team leave history.");
-      }
-    };
-
-    fetchHistory();
+    axiosClient.get("/leaves/team/history").then((res) => {
+      setHistory(res.data);
+    });
   }, []);
 
   return (
-    <div className="page-container">
-      <div className="card">
-        <h2>Team Leave History</h2>
-        {error && <div className="error-text">{error}</div>}
+    <div className="page-card">
+      <h2 className="page-title">Team Leave History</h2>
 
-        {leaves.length === 0 ? (
-          <p>No leave history found.</p>
-        ) : (
-          <div className="table-wrapper">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Employee</th>
-                  <th>Email</th>
-                  <th>From</th>
-                  <th>To</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Manager Comment</th>
-                </tr>
-              </thead>
-              <tbody>
-                {leaves.map((leave) => (
-                  <tr key={leave._id}>
-                    <td>{leave.user?.name}</td>
-                    <td>{leave.user?.email}</td>
-                    <td>{leave.fromDate?.slice(0, 10)}</td>
-                    <td>{leave.toDate?.slice(0, 10)}</td>
-                    <td>{leave.leaveType}</td>
-                    <td>{leave.status}</td>
-                    <td>{leave.managerComment || "-"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+      {history.length === 0 ? (
+        <p>No leave records.</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Type</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {history.map((leave) => (
+              <tr key={leave._id}>
+                <td>{leave.user?.name}</td>
+                <td>{leave.leaveType}</td>
+                <td>{leave.fromDate?.slice(0, 10)}</td>
+                <td>{leave.toDate?.slice(0, 10)}</td>
+                <td>{leave.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };
