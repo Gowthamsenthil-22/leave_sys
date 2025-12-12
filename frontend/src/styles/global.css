@@ -41,6 +41,27 @@ body {
   color: white;
 }
 
+/* 🔥 AUTH LINKS (LOGIN / REGISTER FIX) -----------------------------*/
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* creates space between Login + Register */
+}
+
+.auth-link {
+  color: white !important; /* removes blue color */
+  text-decoration: none;
+  font-size: 15px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.auth-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white !important;
+}
+
 /* LOGOUT BUTTON ----------------------------------------------------*/
 .logout-btn {
   background: #e63946;
@@ -127,6 +148,8 @@ td {
   padding: 12px;
   border-bottom: 1px solid #eee;
 }
+
+/* DASHBOARD BUTTONS --------------------------------------------------*/
 .dashboard-actions {
   display: flex;
   gap: 20px;
@@ -149,6 +172,3 @@ td {
 .dashboard-btn:hover {
   background: #1b263b;
 }
-
-
-
