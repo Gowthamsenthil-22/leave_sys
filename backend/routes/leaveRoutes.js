@@ -8,6 +8,7 @@ const {
   getTeamPendingRequests,
   getTeamHistory,
   getTeamCalendar,
+  decideLeave,
 } = require("../controllers/leaveController");
 
 const { protect, managerOnly } = require("../middleware/authMiddleware");
@@ -22,5 +23,8 @@ router.get("/balance", protect, getMyBalance);
 router.get("/pending/team", protect, managerOnly, getTeamPendingRequests);
 router.get("/team/history", protect, managerOnly, getTeamHistory);
 router.get("/team/calendar", protect, managerOnly, getTeamCalendar);
+
+// ⭐ APPROVE / REJECT ROUTE
+router.put("/:id/decision", protect, managerOnly, decideLeave);
 
 module.exports = router;
