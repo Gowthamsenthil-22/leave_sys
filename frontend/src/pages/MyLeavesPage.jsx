@@ -1,64 +1,64 @@
-import React, { useEffect, useState } from 'react';
-import axiosClient from '../api/axiosClient';
+import React, { useState } from "react";
+import axiosClient from "../api/axiosClient";
 
-const MyLeavesPage = () => {
-  const [leaves, setLeaves] = useState([]);
-  const [error, setError] = useState('');
+const ApplyLeavePage = () => {
+  const [form, setForm] = useState({
+    fromDate: "",
+    toDate: "",
+    leaveType: "casual",
+    reason: "",
+  });
 
-  const fetchLeaves = async () => {
-    try {
-      setError('');
-      const res = await axiosClient.get('/leaves/my');
-      setLeaves(res.data);
-    } catch (err) {
-      console.error(err);
-      setError('Failed to fetch leaves.');
-    }
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  useEffect(() => {
-    fetchLeaves();
-  }, []);
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    await axiosClient.post("/leaves/apply", form);
+    alert("Leave applied successfully!");
+  };
 
   return (
-    <div className="page-container">
-      <div className="card">
-        <h2>My Leave History</h2>
-        {error && <div className="error-text">{error}</div>}
+    <div className="page-card">
+      <h2 className="page-title">Apply for Leave</h2>
 
-        {leaves.length === 0 ? (
-          <p>No leave applications found.</p>
-        ) : (
-          <div className="table-wrapper">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>From</th>
-                  <th>To</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Reason</th>
-                </tr>
-              </thead>
+      <form onSubmit={onSubmit}>
+        <div className="form-group">
+          <label>From Date</label>
+          <input type="date" name="fromDate" required onChange={handleChange} />
+        </div>
 
-              <tbody>
-                {leaves.map((leave) => (
-                  <tr key={leave._id}>
-                    <td>{leave.fromDate?.slice(0, 10)}</td>
-                    <td>{leave.toDate?.slice(0, 10)}</td>
-                    <td>{leave.leaveType}</td>
-                    <td>{leave.status}</td>
-                    <td>{leave.reason}</td>
-                  </tr>
-                ))}
-              </tbody>
+        <div className="form-group">
+          <label>To Date</label>
+          <input type="date" name="toDate" required onChange={handleChange} />
+        </div>
 
-            </table>
-          </div>
-        )}
-      </div>
+        <div className="form-group">
+          <label>Leave Type</label>
+          <select name="leaveType" onChange={handleChange}>
+            <option value="casual">Casual Leave</option>
+            <option value="sick">Sick Leave</option>
+            <option value="earned">Earned Leave</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Reason</label>
+          <textarea
+            name="reason"
+            rows="4"
+            style={{ width: "100%", padding: "12px" }}
+            required
+            onChange={handleChange}
+          ></textarea>
+        </div>
+
+        <button className="primary-btn">Submit</button>
+      </form>
     </div>
   );
 };
 
-export default MyLeavesPage;
+export default ApplyLeavePage;
