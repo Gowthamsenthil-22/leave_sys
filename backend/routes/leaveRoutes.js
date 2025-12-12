@@ -24,7 +24,7 @@ router.get("/pending/team", protect, managerOnly, getTeamPendingRequests);
 router.get("/team/history", protect, managerOnly, getTeamHistory);
 router.get("/team/calendar", protect, managerOnly, getTeamCalendar);
 
-// ⭐ APPROVE / REJECT ROUTE
+// ⭐ APPROVE / REJECT LEAVE
 router.put("/:id/decision", protect, managerOnly, decideLeave);
 
 module.exports = router;
