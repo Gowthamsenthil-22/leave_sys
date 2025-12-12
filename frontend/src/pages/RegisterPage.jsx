@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const RegisterPage = () => {
@@ -8,9 +8,7 @@ const RegisterPage = () => {
   const navigate = useNavigate();
 
   const [managers, setManagers] = useState([]);
-  const [error, setError] = useState("");
-
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
@@ -18,103 +16,74 @@ const RegisterPage = () => {
     manager: "",
   });
 
-  // Load managers list
   useEffect(() => {
-    const loadManagers = async () => {
-      try {
-        const res = await axiosClient.get("/auth/managers");
-        setManagers(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    loadManagers();
+    axiosClient.get("/auth/managers").then((res) => setManagers(res.data));
   }, []);
 
-  const onChange = (e) => {
-    setError("");
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const res = await axiosClient.post("/auth/register", formData);
 
-      const { token, role, name, email, _id } = res.data;
+    const res = await axiosClient.post("/auth/register", form);
 
-      login({ _id, name, email, role }, token);
+    login(res.data.user, res.data.token);
 
-      if (role === "employee") navigate("/employee/dashboard");
-      else navigate("/manager/dashboard");
-    } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || "Registration failed");
-    }
+    if (res.data.user.role === "employee") navigate("/employee/dashboard");
+    else navigate("/manager/dashboard");
   };
 
   return (
-    <div className="page-container">
-      <div className="card">
-        <h2>Register</h2>
+    <div className="page-card">
+      <h2 className="page-title">Register</h2>
 
-        {error && <div className="error-text">{error}</div>}
+      <form onSubmit={onSubmit}>
+        
+        <div className="form-group">
+          <label>Name</label>
+          <input name="name" required onChange={handleChange} />
+        </div>
 
-        <form onSubmit={onSubmit} className="form">
+        <div className="form-group">
+          <label>Email</label>
+          <input name="email" type="email" required onChange={handleChange} />
+        </div>
+
+        <div className="form-group">
+          <label>Password</label>
+          <input name="password" type="password" required onChange={handleChange} />
+        </div>
+
+        <div className="form-group">
+          <label>Role</label>
+          <select name="role" value={form.role} onChange={handleChange}>
+            <option value="employee">Employee</option>
+            <option value="manager">Manager</option>
+          </select>
+        </div>
+
+        {form.role === "employee" && (
           <div className="form-group">
-            <label>Name</label>
-            <input name="name" value={formData.name} onChange={onChange} required />
-          </div>
-
-          <div className="form-group">
-            <label>Email</label>
-            <input type="email" name="email" value={formData.email}
-              onChange={onChange} required />
-          </div>
-
-          <div className="form-group">
-            <label>Password</label>
-            <input type="password" name="password"
-              value={formData.password} onChange={onChange} required />
-          </div>
-
-          <div className="form-group">
-            <label>Role</label>
-            <select name="role" value={formData.role} onChange={onChange}>
-              <option value="employee">Employee</option>
-              <option value="manager">Manager</option>
+            <label>Assign Manager</label>
+            <select name="manager" onChange={handleChange} required>
+              <option value="">Select Manager</option>
+              {managers.map((m) => (
+                <option value={m._id} key={m._id}>
+                  {m.name}
+                </option>
+              ))}
             </select>
           </div>
+        )}
 
-          {/* Show manager dropdown ONLY for employees */}
-          {formData.role === "employee" && (
-            <div className="form-group">
-              <label>Select Manager</label>
-              <select
-                name="manager"
-                value={formData.manager}
-                onChange={onChange}
-                required
-              >
-                <option value="">-- Select Manager --</option>
-                {managers.map((m) => (
-                  <option key={m._id} value={m._id}>
-                    {m.name} ({m.email})
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+        <button className="primary-btn">Register</button>
+      </form>
 
-          <button type="submit" className="primary-button">
-            Register
-          </button>
-        </form>
-
-        <p className="muted-text">
-          Already have an account? <Link to="/login">Login here</Link>
-        </p>
-      </div>
+      <p style={{ marginTop: "10px" }}>
+        Already have an account? <Link to="/login">Login here</Link>
+      </p>
     </div>
   );
 };
