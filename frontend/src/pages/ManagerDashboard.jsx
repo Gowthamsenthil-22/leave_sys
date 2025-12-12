@@ -7,14 +7,25 @@ const ManagerDashboard = () => {
 
   return (
     <div className="page-container">
-      <div className="card dashboard-card">
-        <h2>Manager Dashboard</h2>
-        <p>Welcome, {user?.name}</p>
+      <div className="dashboard-card">
+        <h2 className="dashboard-title">Manager Dashboard</h2>
 
-        <div className="dashboard-links">
-          <Link to="/manager/pending-requests">View Pending Requests</Link>
-          <Link to="/manager/team-history">View Team Leave History</Link>
-          <Link to="/manager/team-calendar">View Team Leave Calendar</Link>
+        <p className="welcome-text">
+          Welcome, <strong>{user?.name}</strong>
+        </p>
+
+        <div className="dashboard-buttons">
+          <Link to="/manager/pending-requests" className="dash-btn">
+            View Pending Requests
+          </Link>
+
+          <Link to="/manager/team-history" className="dash-btn">
+            View Team Leave History
+          </Link>
+
+          <Link to="/manager/team-calendar" className="dash-btn">
+            View Team Leave Calendar
+          </Link>
         </div>
       </div>
     </div>
