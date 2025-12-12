@@ -196,3 +196,30 @@ body {
     gap: 10px;
   }
 }
+/* DASHBOARD CARD */
+.dashboard-card {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.dashboard-links {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dashboard-links a {
+  text-decoration: none;
+  font-size: 16px;
+  color: #153f99;
+  padding: 10px 14px;
+  background: #f1f5ff;
+  border-radius: 6px;
+  transition: 0.2s ease;
+}
+
+.dashboard-links a:hover {
+  background: #d9e5ff;
+}
