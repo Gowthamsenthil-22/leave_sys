@@ -9,7 +9,7 @@ const EmployeeDashboard = () => {
     <div className="page-card">
       <h2 className="page-title">Employee Dashboard</h2>
 
-      <p style={{ marginBottom: "25px", fontSize: "15px", color: "#555" }}>
+      <p style={{ fontSize: "15px", color: "#555", marginBottom: "25px" }}>
         Welcome, <b>{user?.name}</b>
       </p>
 
@@ -23,7 +23,7 @@ const EmployeeDashboard = () => {
         </Link>
 
         <Link to="/employee/my-balance" className="dashboard-btn">
-          Leave Balance
+          View Leave Balance
         </Link>
       </div>
     </div>
