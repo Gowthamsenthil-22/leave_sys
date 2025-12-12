@@ -95,3 +95,66 @@ body {
 .navbar-links a:hover {
   color: #d1d5db;
 }
+/* NAVBAR CONTAINER */
+.navbar {
+  width: 100%;
+  background: #0B132B; /* Clean dark navy */
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* LOGO TEXT */
+.nav-logo {
+  color: white;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* LEFT SIDE (logo + links) */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+/* MIDDLE LINKS */
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  margin-right: 20px;
+  font-size: 15px;
+}
+
+.nav-links a:hover {
+  color: #d1d5db;
+}
+
+/* RIGHT SIDE AUTH LINKS */
+.auth-link {
+  color: white;
+  text-decoration: none;
+  margin-left: 18px;
+  font-size: 15px;
+}
+
+.auth-link:hover {
+  color: #d1d5db;
+}
+
+/* LOGOUT BUTTON */
+.logout-btn {
+  background: #1f2937;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.logout-btn:hover {
+  background: #111827;
+}
