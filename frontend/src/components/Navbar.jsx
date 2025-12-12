@@ -5,35 +5,32 @@ import { useAuth } from "../context/AuthContext";
 const Navbar = () => {
   const { user, logout } = useAuth();
 
-  // ❌ If user is NOT logged in → HIDE NAVBAR
+  // Hide navbar when user is not logged in
   if (!user) return null;
 
   return (
     <nav className="navbar">
-      <Link to={
-        user.role === "manager"
-          ? "/manager/dashboard"
-          : "/employee/dashboard"
-      }>
-        Dashboard
-      </Link>
+      {user.role === "employee" && (
+        <>
+          <Link to="/employee/dashboard">Dashboard</Link>
+          <Link to="/employee/apply-leave">Apply Leave</Link>
+          <Link to="/employee/my-leaves">My Leaves</Link>
+          <Link to="/employee/my-balance">Balance</Link>
+        </>
+      )}
 
       {user.role === "manager" && (
         <>
-          <Link to="/manager/pending">Pending</Link>
-          <Link to="/manager/history">History</Link>
-          <Link to="/manager/calendar">Calendar</Link>
+          <Link to="/manager/dashboard">Dashboard</Link>
+          <Link to="/manager/pending-requests">Pending</Link>
+          <Link to="/manager/team-history">History</Link>
+          <Link to="/manager/team-calendar">Calendar</Link>
         </>
       )}
 
-      {user.role === "employee" && (
-        <>
-          <Link to="/employee/myleaves">My Leaves</Link>
-          <Link to="/employee/balance">Balance</Link>
-        </>
-      )}
-
-      <button onClick={logout}>Logout ({user.role})</button>
+      <button className="logout-btn" onClick={logout}>
+        Logout ({user.role})
+      </button>
     </nav>
   );
 };
