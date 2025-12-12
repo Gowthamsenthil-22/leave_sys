@@ -9,7 +9,7 @@ const applyLeave = async (req, res) => {
   try {
     const { fromDate, toDate, leaveType, reason } = req.body;
 
-    // Load employee data (to get assigned manager)
+    // Load employee details to get assigned manager
     const employee = await User.findById(req.user._id);
 
     if (!employee || employee.role !== "employee") {
@@ -22,7 +22,7 @@ const applyLeave = async (req, res) => {
 
     const leave = await Leave.create({
       user: req.user._id,
-      manager: employee.manager,  // ⭐ Important for manager filtering
+      manager: employee.manager, // ⭐ Manager is linked here
       fromDate,
       toDate,
       leaveType,
@@ -55,7 +55,6 @@ const cancelLeave = async (req, res) => {
     }
 
     await leave.deleteOne();
-
     return res.json({ message: "Leave cancelled" });
   } catch (error) {
     return res.status(500).json({ message: "Failed to cancel leave" });
@@ -87,20 +86,18 @@ const getMyBalance = async (req, res) => {
 };
 
 // =============================
-// TEAM PENDING REQUESTS (⭐ FIXED)
+// TEAM PENDING REQUESTS
 // =============================
 const getTeamPendingRequests = async (req, res) => {
   try {
-    const managerId = req.user._id;
-
     const pending = await Leave.find({
-      manager: managerId,
+      manager: req.user._id,
       status: "pending",
     }).populate("user", "name email");
 
     return res.json(pending);
   } catch (error) {
-    return res.status(500).json({ message: "Failed to fetch pending team requests" });
+    return res.status(500).json({ message: "Failed to fetch pending requests" });
   }
 };
 
@@ -137,6 +134,39 @@ const getTeamCalendar = async (req, res) => {
   }
 };
 
+// =============================
+// APPROVE / REJECT LEAVE (⭐ FIXED)
+// =============================
+const decideLeave = async (req, res) => {
+  try {
+    const { status, comment } = req.body;
+    const leaveId = req.params.id;
+
+    if (!["approved", "rejected"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    const leave = await Leave.findOne({
+      _id: leaveId,
+      manager: req.user._id, // ⭐ Ensures only this manager can update
+    });
+
+    if (!leave) {
+      return res
+        .status(404)
+        .json({ message: "Leave not found or not assigned to this manager" });
+    }
+
+    leave.status = status;
+    leave.managerComment = comment || "";
+    await leave.save();
+
+    return res.json({ message: `Leave ${status} successfully` });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to update leave" });
+  }
+};
+
 module.exports = {
   applyLeave,
   cancelLeave,
@@ -145,4 +175,5 @@ module.exports = {
   getTeamPendingRequests,
   getTeamHistory,
   getTeamCalendar,
+  decideLeave,
 };
