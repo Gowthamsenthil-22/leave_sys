@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'https://leave-sys-backend.onrender.com',
 });
 
 // Attach token for every request if available
