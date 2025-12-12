@@ -1,64 +1,63 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axiosClient from "../api/axiosClient";
 
-const MyLeavesPage = () => {
-  const [leaves, setLeaves] = useState([]);
+const ApplyLeavePage = () => {
+  const [form, setForm] = useState({
+    fromDate: "",
+    toDate: "",
+    leaveType: "casual",
+    reason: "",
+  });
 
-  useEffect(() => {
-    axiosClient.get("/leaves/my").then((res) => {
-      setLeaves(res.data);
-    });
-  }, []);
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-  const cancelLeave = async (id) => {
-    await axiosClient.put(`/leaves/${id}/cancel`);
-    setLeaves((prev) => prev.filter((x) => x._id !== id));
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    await axiosClient.post("/leaves/apply", form);
+    alert("Leave applied successfully!");
   };
 
   return (
     <div className="page-card">
-      <h2 className="page-title">My Leave History</h2>
+      <h2 className="page-title">Apply for Leave</h2>
 
-      {leaves.length === 0 ? (
-        <p>No leave applications found.</p>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>From</th>
-              <th>To</th>
-              <th>Type</th>
-              <th>Status</th>
-              <th>Reason</th>
-              <th>Action</th>
-            </tr>
-          </thead>
+      <form onSubmit={onSubmit}>
 
-          <tbody>
-            {leaves.map((leave) => (
-              <tr key={leave._id}>
-                <td>{leave.fromDate?.slice(0, 10)}</td>
-                <td>{leave.toDate?.slice(0, 10)}</td>
-                <td>{leave.leaveType}</td>
-                <td>{leave.status}</td>
-                <td>{leave.reason}</td>
-                <td>
-                  {leave.status === "pending" && (
-                    <button
-                      className="secondary-button"
-                      onClick={() => cancelLeave(leave._id)}
-                    >
-                      Cancel
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+        <div className="form-group">
+          <label>From Date</label>
+          <input type="date" name="fromDate" required onChange={handleChange} />
+        </div>
+
+        <div className="form-group">
+          <label>To Date</label>
+          <input type="date" name="toDate" required onChange={handleChange} />
+        </div>
+
+        <div className="form-group">
+          <label>Leave Type</label>
+          <select name="leaveType" onChange={handleChange}>
+            <option value="casual">Casual</option>
+            <option value="sick">Sick</option>
+            <option value="earned">Earned</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Reason</label>
+          <textarea
+            name="reason"
+            rows="4"
+            onChange={handleChange}
+            style={{ width: "100%", padding: "12px", borderRadius: "8px" }}
+          ></textarea>
+        </div>
+
+        <button className="primary-btn">Apply</button>
+      </form>
     </div>
   );
 };
 
-export default MyLeavesPage;
+export default ApplyLeavePage;
