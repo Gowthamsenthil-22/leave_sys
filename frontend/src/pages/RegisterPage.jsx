@@ -16,23 +16,50 @@ const RegisterPage = () => {
     manager: "",
   });
 
+  // Load all managers for dropdown
   useEffect(() => {
-    axiosClient.get("/auth/managers").then((res) => setManagers(res.data));
+    axiosClient
+      .get("/auth/managers")
+      .then((res) => setManagers(res.data))
+      .catch((err) => console.log(err));
   }, []);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
   };
 
+  // ⭐ FIXED SUBMIT FUNCTION
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await axiosClient.post("/auth/register", form);
+    // Build final payload
+    const payload = { ...form };
 
-    login(res.data.user, res.data.token);
+    // 🔥 IMPORTANT FIX: Remove manager field for managers
+    if (form.role === "manager") {
+      delete payload.manager;
+    }
 
-    if (res.data.user.role === "employee") navigate("/employee/dashboard");
-    else navigate("/manager/dashboard");
+    try {
+      const res = await axiosClient.post("/auth/register", payload);
+
+      // backend returns: { user, token }
+      const { user, token } = res.data;
+
+      // store in context + localStorage
+      login(user, token);
+
+      // redirect based on role
+      if (user.role === "employee") navigate("/employee/dashboard");
+      else navigate("/manager/dashboard");
+      
+    } catch (err) {
+      console.log("Registration error:", err);
+      alert(err.response?.data?.message || "Registration failed");
+    }
   };
 
   return (
@@ -40,20 +67,40 @@ const RegisterPage = () => {
       <h2 className="page-title">Register</h2>
 
       <form onSubmit={onSubmit}>
-        
+
         <div className="form-group">
           <label>Name</label>
-          <input name="name" required onChange={handleChange} />
+          <input
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            placeholder="Enter full name"
+            required
+          />
         </div>
 
         <div className="form-group">
           <label>Email</label>
-          <input name="email" type="email" required onChange={handleChange} />
+          <input
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+            placeholder="Enter email"
+            required
+          />
         </div>
 
         <div className="form-group">
           <label>Password</label>
-          <input name="password" type="password" required onChange={handleChange} />
+          <input
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={handleChange}
+            placeholder="Enter password"
+            required
+          />
         </div>
 
         <div className="form-group">
@@ -64,25 +111,32 @@ const RegisterPage = () => {
           </select>
         </div>
 
+        {/* Only show manager dropdown for employees */}
         {form.role === "employee" && (
           <div className="form-group">
             <label>Assign Manager</label>
-            <select name="manager" onChange={handleChange} required>
+            <select
+              name="manager"
+              value={form.manager}
+              onChange={handleChange}
+              required
+            >
               <option value="">Select Manager</option>
+
               {managers.map((m) => (
-                <option value={m._id} key={m._id}>
-                  {m.name}
+                <option key={m._id} value={m._id}>
+                  {m.name} ({m.email})
                 </option>
               ))}
             </select>
           </div>
         )}
 
-        <button className="primary-btn">Register</button>
+        <button className="primary-btn" type="submit">Register</button>
       </form>
 
-      <p style={{ marginTop: "10px" }}>
-        Already have an account? <Link to="/login">Login here</Link>
+      <p style={{ marginTop: "10px", fontSize: "14px" }}>
+        Already have an account? <Link to="/login">Login</Link>
       </p>
     </div>
   );
