@@ -5,9 +5,7 @@ const MyLeavesPage = () => {
   const [leaves, setLeaves] = useState([]);
 
   useEffect(() => {
-    axiosClient.get("/leaves/my").then((res) => {
-      setLeaves(res.data);
-    });
+    axiosClient.get("/leaves/my").then((res) => setLeaves(res.data));
   }, []);
 
   const cancelLeave = async (id) => {
@@ -20,7 +18,7 @@ const MyLeavesPage = () => {
       <h2 className="page-title">My Leave History</h2>
 
       {leaves.length === 0 ? (
-        <p>No leave applications found.</p>
+        <p>No leave applications yet.</p>
       ) : (
         <table>
           <thead>
