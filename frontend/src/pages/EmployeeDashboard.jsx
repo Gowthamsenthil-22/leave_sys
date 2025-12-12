@@ -1,27 +1,30 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.jsx';
+import React from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const EmployeeDashboard = () => {
   const { user } = useAuth();
 
   return (
-    <div className="page-container">
-      <div className="card">
-        <h2>Employee Dashboard</h2>
-        <p>Welcome, {user?.name}</p>
+    <div className="page-card">
+      <h2 className="page-title">Employee Dashboard</h2>
 
-        <div className="grid">
-          <Link to="/employee/apply-leave" className="card-link">
-            Apply for Leave
-          </Link>
-          <Link to="/employee/my-leaves" className="card-link">
-            View My Leave History
-          </Link>
-          <Link to="/employee/my-balance" className="card-link">
-            View My Leave Balance
-          </Link>
-        </div>
+      <p style={{ marginBottom: "25px", fontSize: "15px", color: "#555" }}>
+        Welcome, <b>{user?.name}</b>
+      </p>
+
+      <div className="dashboard-actions">
+        <Link to="/employee/apply-leave" className="dashboard-btn">
+          Apply for Leave
+        </Link>
+
+        <Link to="/employee/my-leaves" className="dashboard-btn">
+          My Leave History
+        </Link>
+
+        <Link to="/employee/my-balance" className="dashboard-btn">
+          Leave Balance
+        </Link>
       </div>
     </div>
   );
