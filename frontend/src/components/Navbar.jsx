@@ -7,28 +7,34 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
+      {/* LEFT SIDE */}
       <div className="nav-left">
         <h3 className="nav-logo">Leave & Expense (Leave Only)</h3>
 
-        {user && user.role === "employee" && (
+        {user && (
           <div className="nav-links">
-            <Link to="/employee/dashboard">Dashboard</Link>
-            <Link to="/employee/apply-leave">Apply</Link>
-            <Link to="/employee/my-leaves">My Leaves</Link>
-            <Link to="/employee/my-balance">Balance</Link>
-          </div>
-        )}
+            {user.role === "employee" && (
+              <>
+                <Link to="/employee/dashboard">Dashboard</Link>
+                <Link to="/employee/apply-leave">Apply</Link>
+                <Link to="/employee/my-leaves">My Leaves</Link>
+                <Link to="/employee/my-balance">Balance</Link>
+              </>
+            )}
 
-        {user && user.role === "manager" && (
-          <div className="nav-links">
-            <Link to="/manager/dashboard">Dashboard</Link>
-            <Link to="/manager/pending-requests">Pending</Link>
-            <Link to="/manager/team-history">History</Link>
-            <Link to="/manager/team-calendar">Calendar</Link>
+            {user.role === "manager" && (
+              <>
+                <Link to="/manager/dashboard">Dashboard</Link>
+                <Link to="/manager/pending-requests">Pending</Link>
+                <Link to="/manager/team-history">History</Link>
+                <Link to="/manager/team-calendar">Calendar</Link>
+              </>
+            )}
           </div>
         )}
       </div>
 
+      {/* RIGHT SIDE */}
       <div className="nav-right">
         {user ? (
           <button className="logout-btn" onClick={logout}>
@@ -46,4 +52,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
