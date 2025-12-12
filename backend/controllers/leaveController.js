@@ -9,7 +9,6 @@ const applyLeave = async (req, res) => {
   try {
     const { fromDate, toDate, leaveType, reason } = req.body;
 
-    // Load employee details to get assigned manager
     const employee = await User.findById(req.user._id);
 
     if (!employee || employee.role !== "employee") {
@@ -22,7 +21,7 @@ const applyLeave = async (req, res) => {
 
     const leave = await Leave.create({
       user: req.user._id,
-      manager: employee.manager, // ⭐ Manager is linked here
+      manager: employee.manager,
       fromDate,
       toDate,
       leaveType,
@@ -32,7 +31,6 @@ const applyLeave = async (req, res) => {
 
     return res.status(201).json(leave);
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Failed to apply leave" });
   }
 };
@@ -69,7 +67,7 @@ const getMyLeaves = async (req, res) => {
     const leaves = await Leave.find({ user: req.user._id }).sort({ createdAt: -1 });
     return res.json(leaves);
   } catch (error) {
-    return res.status(500).json({ message: "Failed to fetch my leaves" });
+    return res.status(500).json({ message: "Failed to fetch leaves" });
   }
 };
 
@@ -81,7 +79,7 @@ const getMyBalance = async (req, res) => {
     const balance = await LeaveBalance.findOne({ user: req.user._id });
     return res.json(balance);
   } catch (error) {
-    return res.status(500).json({ message: "Failed to fetch leave balance" });
+    return res.status(500).json({ message: "Failed to fetch balance" });
   }
 };
 
@@ -114,7 +112,7 @@ const getTeamHistory = async (req, res) => {
 
     return res.json(history);
   } catch (error) {
-    return res.status(500).json({ message: "Failed to fetch team history" });
+    return res.status(500).json({ message: "Failed to fetch history" });
   }
 };
 
@@ -135,7 +133,7 @@ const getTeamCalendar = async (req, res) => {
 };
 
 // =============================
-// APPROVE / REJECT LEAVE (⭐ FIXED)
+// APPROVE / REJECT LEAVE
 // =============================
 const decideLeave = async (req, res) => {
   try {
@@ -148,13 +146,11 @@ const decideLeave = async (req, res) => {
 
     const leave = await Leave.findOne({
       _id: leaveId,
-      manager: req.user._id, // ⭐ Ensures only this manager can update
+      manager: req.user._id,
     });
 
     if (!leave) {
-      return res
-        .status(404)
-        .json({ message: "Leave not found or not assigned to this manager" });
+      return res.status(404).json({ message: "Leave not found or unauthorized" });
     }
 
     leave.status = status;
