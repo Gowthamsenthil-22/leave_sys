@@ -6,27 +6,30 @@ const ManagerDashboard = () => {
   const { user } = useAuth();
 
   return (
-    <div className="page-container">
-      <div className="dashboard-card">
-        <h2 className="dashboard-title">Manager Dashboard</h2>
+    <div className="center-box">
+      <div className="card">
 
-        <p className="welcome-text">
-          Welcome, <strong>{user?.name}</strong>
+        <h2 style={{ fontSize: "1.8rem", marginBottom: "0.5rem" }}>
+          Manager Dashboard
+        </h2>
+        <p style={{ marginBottom: "1.5rem", color: "#4b5563" }}>
+          Welcome, {user?.name}
         </p>
 
-        <div className="dashboard-buttons">
-          <Link to="/manager/pending-requests" className="dash-btn">
-            View Pending Requests
+        <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+          <Link to="/manager/pending-requests">
+            <button className="primary-button" style={{ width: 250 }}>View Pending Requests</button>
           </Link>
 
-          <Link to="/manager/team-history" className="dash-btn">
-            View Team Leave History
+          <Link to="/manager/team-history">
+            <button className="primary-button" style={{ width: 250 }}>View Team Leave History</button>
           </Link>
 
-          <Link to="/manager/team-calendar" className="dash-btn">
-            View Team Leave Calendar
+          <Link to="/manager/team-calendar">
+            <button className="primary-button" style={{ width: 250 }}>View Team Leave Calendar</button>
           </Link>
         </div>
+
       </div>
     </div>
   );
