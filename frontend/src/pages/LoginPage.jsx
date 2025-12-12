@@ -1,56 +1,51 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
 
 const LoginPage = () => {
   const { login } = useAuth();
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const navigate = useNavigate();
+  
+  const [form, setForm] = useState({ email: "", password: "" });
 
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const res = await axiosClient.post("/auth/login", formData);
+
+    const res = await axiosClient.post("/auth/login", form);
+
     login(res.data.user, res.data.token);
+
+    if (res.data.user.role === "employee") navigate("/employee/dashboard");
+    else navigate("/manager/dashboard");
   };
 
   return (
-    <div className="page-container">
-      <div className="card">
-        <h2>Login</h2>
+    <div className="page-card">
+      <h2 className="page-title">Login</h2>
 
-        <form onSubmit={onSubmit} className="form">
-          <div className="form-group">
-            <label>Email</label>
-            <input
-              name="email"
-              type="email"
-              placeholder="Enter your email"
-              onChange={onChange}
-              required
-            />
-          </div>
+      <form onSubmit={onSubmit}>
 
-          <div className="form-group">
-            <label>Password</label>
-            <input
-              name="password"
-              type="password"
-              placeholder="Enter your password"
-              onChange={onChange}
-              required
-            />
-          </div>
+        <div className="form-group">
+          <label>Email</label>
+          <input name="email" type="email" required onChange={handleChange} />
+        </div>
 
-          <button className="primary-button">Login</button>
-        </form>
+        <div className="form-group">
+          <label>Password</label>
+          <input name="password" type="password" required onChange={handleChange} />
+        </div>
 
-        <p className="muted-text">
-          Don’t have an account? <Link to="/register">Register here</Link>
-        </p>
-      </div>
+        <button className="primary-btn">Login</button>
+      </form>
+
+      <p style={{ marginTop: "10px" }}>
+        Don't have an account? <Link to="/register">Register here</Link>
+      </p>
     </div>
   );
 };
