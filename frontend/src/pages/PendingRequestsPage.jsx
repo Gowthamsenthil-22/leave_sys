@@ -1,91 +1,74 @@
-import React, { useEffect, useState } from 'react';
-import axiosClient from '../api/axiosClient';
+import React, { useEffect, useState } from "react";
+import axiosClient from "../api/axiosClient";
 
 const PendingRequestsPage = () => {
-  const [leaves, setLeaves] = useState([]);
-  const [error, setError] = useState('');
-
-  const fetchPending = async () => {
-    try {
-      setError('');
-      const res = await axiosClient.get('/leaves/team/pending');
-      setLeaves(res.data);
-    } catch (err) {
-      console.error(err);
-      setError('Failed to fetch pending requests.');
-    }
-  };
-
-  const decide = async (id, status) => {
-    const managerComment = window.prompt(`Enter comment for ${status}:`, '');
-    try {
-      await axiosClient.put(`/leaves/${id}/decision`, {
-        status,
-        managerComment,
-      });
-      fetchPending();
-    } catch (err) {
-      console.error(err);
-      alert(err.response?.data?.message || 'Failed to update leave.');
-    }
-  };
+  const [requests, setRequests] = useState([]);
 
   useEffect(() => {
-    fetchPending();
+    axiosClient.get("/leaves/pending/team").then((res) => {
+      setRequests(res.data);
+    });
   }, []);
 
   return (
-    <div className="page-container">
-      <div className="card">
-        <h2>Pending Leave Requests</h2>
-        {error && <div className="error-text">{error}</div>}
+    <div className="page-card">
+      <h2 className="page-title">Pending Leave Requests</h2>
 
-        {leaves.length === 0 ? (
-          <p>No pending requests.</p>
-        ) : (
-          <div className="table-wrapper">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Employee</th>
-                  <th>Email</th>
-                  <th>From</th>
-                  <th>To</th>
-                  <th>Type</th>
-                  <th>Reason</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {leaves.map((leave) => (
-                  <tr key={leave._id}>
-                    <td>{leave.user?.name}</td>
-                    <td>{leave.user?.email}</td>
-                    <td>{leave.fromDate?.slice(0, 10)}</td>
-                    <td>{leave.toDate?.slice(0, 10)}</td>
-                    <td>{leave.leaveType}</td>
-                    <td>{leave.reason}</td>
-                    <td>
-                      <button
-                        className="primary-button small-button"
-                        onClick={() => decide(leave._id, 'approved')}
-                      >
-                        Approve
-                      </button>
-                      <button
-                        className="danger-button small-button"
-                        onClick={() => decide(leave._id, 'rejected')}
-                      >
-                        Reject
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+      {requests.length === 0 ? (
+        <p>No pending requests.</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Type</th>
+              <th>Reason</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {requests.map((req) => (
+              <tr key={req._id}>
+                <td>{req.user?.name}</td>
+                <td>{req.fromDate?.slice(0, 10)}</td>
+                <td>{req.toDate?.slice(0, 10)}</td>
+                <td>{req.leaveType}</td>
+                <td>{req.reason}</td>
+                <td>
+                  <button
+                    className="primary-btn"
+                    style={{ padding: "8px 12px", fontSize: "14px" }}
+                    onClick={async () => {
+                      await axiosClient.put(`/leaves/${req._id}/decision`, {
+                        status: "approved",
+                      });
+                      setRequests((prev) => prev.filter((x) => x._id !== req._id));
+                    }}
+                  >
+                    Approve
+                  </button>
+
+                  <button
+                    className="secondary-button"
+                    style={{ padding: "8px 12px", marginLeft: "8px" }}
+                    onClick={async () => {
+                      await axiosClient.put(`/leaves/${req._id}/decision`, {
+                        status: "rejected",
+                      });
+                      setRequests((prev) => prev.filter((x) => x._id !== req._id));
+                    }}
+                  >
+                    Reject
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };
