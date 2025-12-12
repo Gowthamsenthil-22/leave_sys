@@ -5,9 +5,7 @@ const MyBalancePage = () => {
   const [balance, setBalance] = useState(null);
 
   useEffect(() => {
-    axiosClient.get("/leaves/balance").then((res) => {
-      setBalance(res.data);
-    });
+    axiosClient.get("/leaves/balance").then((res) => setBalance(res.data));
   }, []);
 
   return (
@@ -20,9 +18,9 @@ const MyBalancePage = () => {
         <table>
           <thead>
             <tr>
-              <th>Casual Leave</th>
-              <th>Sick Leave</th>
-              <th>Earned Leave</th>
+              <th>Casual</th>
+              <th>Sick</th>
+              <th>Earned</th>
             </tr>
           </thead>
 
