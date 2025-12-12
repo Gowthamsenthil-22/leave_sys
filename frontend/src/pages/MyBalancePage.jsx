@@ -1,50 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import axiosClient from '../api/axiosClient';
+import React, { useEffect, useState } from "react";
+import axiosClient from "../api/axiosClient";
 
 const MyBalancePage = () => {
   const [balance, setBalance] = useState(null);
-  const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchBalance = async () => {
-      try {
-        setError('');
-        const res = await axiosClient.get('/leaves/balance');
-        setBalance(res.data);
-      } catch (err) {
-        console.error(err);
-        setError('Failed to fetch leave balance.');
-      }
-    };
-
-    fetchBalance();
+    axiosClient.get("/leaves/balance").then((res) => {
+      setBalance(res.data);
+    });
   }, []);
 
   return (
-    <div className="page-container">
-      <div className="card">
-        <h2>My Leave Balance</h2>
-        {error && <div className="error-text">{error}</div>}
+    <div className="page-card">
+      <h2 className="page-title">My Leave Balance</h2>
 
-        {!balance ? (
-          <p>No balance data found.</p>
-        ) : (
-          <div className="grid">
-            <div className="balance-card">
-              <h4>Casual Leaves</h4>
-              <p>{balance.casual}</p>
-            </div>
-            <div className="balance-card">
-              <h4>Sick Leaves</h4>
-              <p>{balance.sick}</p>
-            </div>
-            <div className="balance-card">
-              <h4>Earned Leaves</h4>
-              <p>{balance.earned}</p>
-            </div>
-          </div>
-        )}
-      </div>
+      {!balance ? (
+        <p>Loading...</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Casual Leave</th>
+              <th>Sick Leave</th>
+              <th>Earned Leave</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>{balance.casual}</td>
+              <td>{balance.sick}</td>
+              <td>{balance.earned}</td>
+            </tr>
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };
