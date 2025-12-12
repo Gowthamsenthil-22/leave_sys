@@ -20,24 +20,28 @@ const getManagers = async (req, res) => {
 };
 
 // =========================
-// REGISTER USER
+// REGISTER USER (FIXED)
 // =========================
 const registerUser = async (req, res, next) => {
   try {
     const { name, email, password, role, manager } = req.body;
 
+    // validation
     if (!name || !email || !password) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    // email exists?
     const exists = await User.findOne({ email });
     if (exists) {
       return res.status(400).json({ message: "Email already exists" });
     }
 
+    // hash password
     const salt = await bcrypt.genSalt(10);
     const hashed = await bcrypt.hash(password, salt);
 
+    // build new user
     const newUserData = {
       name,
       email,
@@ -45,14 +49,15 @@ const registerUser = async (req, res, next) => {
       role: role || "employee",
     };
 
-    // If employee, assign manager
+    // If employee → assign manager
     if (role === "employee") {
       newUserData.manager = manager;
     }
 
+    // create user
     const user = await User.create(newUserData);
 
-    // Create employee leave balance
+    // Create Leave Balance for employees
     if (user.role === "employee") {
       await LeaveBalance.create({
         user: user._id,
@@ -62,20 +67,24 @@ const registerUser = async (req, res, next) => {
       });
     }
 
+    // ⭐ FIXED: return user + token (frontend expects this structure)
     return res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
       token: generateToken(user._id),
     });
+
   } catch (err) {
     next(err);
   }
 };
 
 // =========================
-// LOGIN
+// LOGIN USER
 // =========================
 const loginUser = async (req, res, next) => {
   try {
@@ -86,23 +95,25 @@ const loginUser = async (req, res, next) => {
     if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
     const valid = await bcrypt.compare(password, user.password);
-
     if (!valid) return res.status(401).json({ message: "Invalid credentials" });
 
     return res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
       token: generateToken(user._id),
     });
+
   } catch (err) {
     next(err);
   }
 };
 
 // =========================
-// CURRENT USER
+// GET CURRENT USER
 // =========================
 const getMe = async (req, res) => {
   return res.json(req.user);
