@@ -16,7 +16,24 @@ const applyLeave = async (req, res) => {
     }
 
     if (!employee.manager) {
-      return res.status(400).json({ message: "Employee has no assigned manager" });
+      return res
+        .status(400)
+        .json({ message: "Employee has no assigned manager" });
+    }
+
+    // 🚫 Prevent duplicate pending leave
+    const existing = await Leave.findOne({
+      user: req.user._id,
+      fromDate,
+      toDate,
+      leaveType,
+      status: "pending",
+    });
+
+    if (existing) {
+      return res.status(400).json({
+        message: "You already applied for this leave",
+      });
     }
 
     const leave = await Leave.create({
@@ -31,6 +48,7 @@ const applyLeave = async (req, res) => {
 
     return res.status(201).json(leave);
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: "Failed to apply leave" });
   }
 };
@@ -49,7 +67,9 @@ const cancelLeave = async (req, res) => {
     }
 
     if (leave.status !== "pending") {
-      return res.status(400).json({ message: "Cannot cancel approved/rejected leave" });
+      return res
+        .status(400)
+        .json({ message: "Cannot cancel approved/rejected leave" });
     }
 
     await leave.deleteOne();
@@ -64,7 +84,9 @@ const cancelLeave = async (req, res) => {
 // =============================
 const getMyLeaves = async (req, res) => {
   try {
-    const leaves = await Leave.find({ user: req.user._id }).sort({ createdAt: -1 });
+    const leaves = await Leave.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
     return res.json(leaves);
   } catch (error) {
     return res.status(500).json({ message: "Failed to fetch leaves" });
@@ -133,7 +155,7 @@ const getTeamCalendar = async (req, res) => {
 };
 
 // =============================
-// APPROVE / REJECT LEAVE
+// APPROVE / REJECT LEAVE  ✅ FIXED
 // =============================
 const decideLeave = async (req, res) => {
   try {
@@ -150,15 +172,65 @@ const decideLeave = async (req, res) => {
     });
 
     if (!leave) {
-      return res.status(404).json({ message: "Leave not found or unauthorized" });
+      return res.status(404).json({
+        message: "Leave not found or not assigned to this manager",
+      });
+    }
+
+    // ⛔ Prevent double decision
+    if (leave.status !== "pending") {
+      return res.status(400).json({
+        message: "Leave already processed",
+      });
     }
 
     leave.status = status;
     leave.managerComment = comment || "";
+
+    // ✅ DEDUCT BALANCE ONLY IF APPROVED
+    if (status === "approved") {
+      const balance = await LeaveBalance.findOne({ user: leave.user });
+
+      if (!balance) {
+        return res.status(404).json({ message: "Leave balance not found" });
+      }
+
+      const from = new Date(leave.fromDate);
+      const to = new Date(leave.toDate);
+      const days =
+        Math.ceil((to - from) / (1000 * 60 * 60 * 24)) + 1;
+
+      if (leave.leaveType === "casual") {
+        if (balance.casual < days) {
+          return res.status(400).json({ message: "Insufficient casual leave" });
+        }
+        balance.casual -= days;
+      }
+
+      if (leave.leaveType === "sick") {
+        if (balance.sick < days) {
+          return res.status(400).json({ message: "Insufficient sick leave" });
+        }
+        balance.sick -= days;
+      }
+
+      if (leave.leaveType === "earned") {
+        if (balance.earned < days) {
+          return res.status(400).json({ message: "Insufficient earned leave" });
+        }
+        balance.earned -= days;
+      }
+
+      await balance.save();
+    }
+
     await leave.save();
 
-    return res.json({ message: `Leave ${status} successfully` });
+    return res.json({
+      message: `Leave ${status} successfully`,
+    });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: "Failed to update leave" });
   }
 };
